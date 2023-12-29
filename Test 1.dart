@@ -3,7 +3,7 @@ import 'dart:io';
 
 
 void main() {
-var lines = ReadFile(r'C:\Users\lfitzpatrick\Downloads\two1nine.txt');
+var lines = ReadFile(r'C:\Users\lfitzpatrick\Downloads\input.txt');
 num sum = ChallengeOne(lines);
 print('The Sum is: $sum');
 }
@@ -26,11 +26,11 @@ num ChallengeOne(List<String> rows) {
     'eight': '8',
     'nine': '9'
   };
-  num sum = 0;
+  num answer = 0;
   for (String row in rows) {
     Map<num, String> rowNumbers = {};
 
-    RegExp digits = RegExp(r'\d', caseSensitive: false);
+    RegExp digits = RegExp(r'(?=(\d|one|two|three|four|five|six|seven|eight|nine))', caseSensitive: false);
 
     Iterable<RegExpMatch> digitMatches = digits.allMatches(row);
 
@@ -40,27 +40,54 @@ num ChallengeOne(List<String> rows) {
       rowNumbers.addEntries([MapEntry(location, value)]);
     }
 
-    for (int i = 0; i < row.length; ++i) {
-      numbers.forEach((key, value) {
-        if (row.startsWith(key)) {
-          rowNumbers.addEntries([MapEntry(i, value)]);
-        }
-      });
-    }
+    // for (int i = 0; i < row.length; ++i) {
+    //   numbers.forEach((key, value) {
+    //     if (row.substring(i).startsWith(key)) {
+    //       rowNumbers.addEntries([MapEntry(i, value)]);
+    //     }
+    //   });
+    // }
 
 
     var sortedNumbers = new SplayTreeMap<num, String>.from(rowNumbers);
 
+    sortedNumbers.forEach((key, value) {
+      if(numbers.keys.contains(value)) {
+        sortedNumbers[key] = numbers[value]!;
+      }
+    });
+
     if (sortedNumbers.length <= 1) {
       num val = num.parse('${sortedNumbers.values.first}${sortedNumbers.values.first}');
-      sum += val;
+      answer += val;
       print(val);
     } else {
       num val = num.parse('${sortedNumbers.values.first}${sortedNumbers.values.last}');
-      sum += val;
+      answer += val;
       print(val);
     }
     print(row);
   }
-  return sum;
+  return answer;
+}
+
+num ChallengeTwo(List<String> rows) {
+  num answer = 0;
+  Map<String, num> maxValues = {
+    'red' : 12,
+    'green' : 13,
+    'blue' : 14
+  };
+  Map<String, num> gameValues = {};
+  num gameID;
+
+  RegExp digitFinder = RegExp(r'\d');
+
+  for(String row in rows) {
+    gameID = digitFinder.firstMatch(row.split(':').first) as num;
+    print(gameID);
+  }
+
+
+  return answer;
 }
